@@ -58,10 +58,10 @@ Set these environment variables in the Vercel project (Settings → Environment 
 |---|---|---|
 | `SMTP_HOST` | `smtp.gmail.com` | Any SMTP provider: Gmail, Resend, Brevo, Mailgun, Postmark |
 | `SMTP_PORT` | `465` | 465 uses TLS, 587 uses STARTTLS |
-| `SMTP_USER` | `rkhama50@gmail.com` | Gmail needs an App Password, not the account password |
+| `SMTP_USER` | `you@gmail.com` | Gmail needs an App Password, not the account password |
 | `SMTP_PASS` | `xxxx xxxx xxxx xxxx` | |
-| `MAIL_FROM` | `The Saints Club <rkhama50@gmail.com>` | Must be an address the provider lets you send as |
-| `MAIL_TO` | `rkhama50@gmail.com` | Where new-signup notifications go |
+| `MAIL_FROM` | `The Saints Club <you@gmail.com>` | Must be an address the provider lets you send as |
+| `MAIL_TO` | `you@gmail.com` | Where new-signup notifications go |
 | `MAIL_REPLY_TO` | `hello@thesaintsclub.online` | Optional |
 | `SITE_URL` | `https://the-saints-club.vercel.app` | Used for links and images inside the email |
 
