@@ -36,6 +36,7 @@
       </div></div></div>
       <header class="nav">
         <div class="nav__left">
+          <a class="nav__link${active('home')}" href="index.html" data-cursor="Home">Home</a>
           <a class="nav__link${active('shop')}" href="shop.html" data-cursor="Shop">Shop</a>
           <a class="nav__link${active('lookbook')}" href="lookbook.html" data-cursor="Look">Lookbook</a>
           <a class="nav__link${active('club')}" href="club.html" data-cursor="Join">The Club</a>
@@ -43,14 +44,14 @@
         </div>
         <a class="nav__logo" href="index.html" aria-label="The Saints Club home"><img src="assets/img/saints-logo-white.png" alt="TSC"><span>JHB 011</span></a>
         <div class="nav__right">
-          <a class="nav__link" href="club.html#waitlist">Drops</a>
+          <a class="nav__link${active('contact')}" href="contact.html">Contact</a>
           <button class="nav__bag" data-open-cart aria-label="Open bag"><span>Bag</span><span class="nav__bagcount">0</span></button>
         </div>
       </header>
       <nav class="menu" aria-hidden="true">
         <div class="menu__top"><span>TSC // Menu</span><button class="menu__close">Close ✕</button></div>
         <div class="menu__links">
-          <a class="menu__link" href="index.html"><small>00</small><span>Sanctuary</span></a>
+          <a class="menu__link" href="index.html"><small>00</small><span>Home</span></a>
           <a class="menu__link" href="shop.html"><small>01</small><span>Shop</span></a>
           <a class="menu__link" href="lookbook.html"><small>02</small><span>Lookbook</span></a>
           <a class="menu__link" href="club.html"><small>03</small><span>The Club</span></a>
