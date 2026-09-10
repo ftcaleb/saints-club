@@ -55,8 +55,9 @@
           <a class="menu__link" href="lookbook.html"><small>02</small><span>Lookbook</span></a>
           <a class="menu__link" href="club.html"><small>03</small><span>The Club</span></a>
           <a class="menu__link" href="club.html#waitlist"><small>04</small><span>Drops</span></a>
+          <a class="menu__link" href="contact.html"><small>05</small><span>Contact</span></a>
         </div>
-        <div class="menu__bottom"><span>@the.saintsclub</span><span>Johannesburg, ZA</span><span>Not for everybody</span></div>
+        <div class="menu__bottom"><span>@the.saintsclub</span><span>Johannesburg, ZA</span><a href="contact.html">Contact</a><span>Not for everybody</span></div>
       </nav>
       <div class="hud" aria-hidden="true">
         <div class="hud__bl"><span class="hud__mark"></span><span class="hud__section">00 / Sanctuary</span></div>
@@ -90,7 +91,7 @@
               <li><a href="club.html">Membership</a></li><li><a href="club.html#waitlist">Drop calendar</a></li><li><a href="lookbook.html">Lookbook</a></li><li><a href="https://www.instagram.com/the.saintsclub/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.tiktok.com/@thesaintsclub" target="_blank" rel="noopener">TikTok</a></li>
             </ul></div>
             <div class="footer__col"><h4>Help</h4><ul>
-              <li><a href="${TSC.STORE}/policies/shipping-policy" target="_blank" rel="noopener">Shipping: 3 to 5 days</a></li><li><a href="${TSC.STORE}/policies/refund-policy" target="_blank" rel="noopener">Exchanges</a></li><li><a href="${TSC.STORE}/pages/contact" target="_blank" rel="noopener">Contact</a></li><li><a href="${TSC.STORE}/policies/privacy-policy" target="_blank" rel="noopener">Privacy</a></li><li><a href="${TSC.STORE}/policies/terms-of-service" target="_blank" rel="noopener">Terms</a></li>
+              <li><a href="${TSC.STORE}/policies/shipping-policy" target="_blank" rel="noopener">Shipping: 3 to 5 days</a></li><li><a href="${TSC.STORE}/policies/refund-policy" target="_blank" rel="noopener">Exchanges</a></li><li><a href="contact.html">Contact</a></li><li><a href="${TSC.STORE}/policies/privacy-policy" target="_blank" rel="noopener">Privacy</a></li><li><a href="${TSC.STORE}/policies/terms-of-service" target="_blank" rel="noopener">Terms</a></li>
             </ul></div>
           </div>
         </div>

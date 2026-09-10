@@ -196,4 +196,55 @@ function ownerEmail({ email, phone, source, product, ip, ua }) {
   </table></body></html>`;
 }
 
-module.exports = { subscriberEmail, subscriberText, ownerEmail, copyFor };
+/* ---------- contact form ---------- */
+function shell({ pre, eyebrow, title, body, cta, ctaHref, extra = '' }) {
+  const S = SITE();
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>The Saints Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500&family=Big+Shoulders+Display:wght@800&family=Inter+Tight:wght@400;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:${C.ink}} @media (max-width:620px){.wrap{width:100%!important}.pad{padding-left:20px!important;padding-right:20px!important}.h1{font-size:50px!important}}</style></head>
+<body style="margin:0;padding:0;background:${C.ink}">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:${C.ink}">${esc(pre)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.ink}"><tr><td align="center">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.bone}"><tr><td align="center" style="padding:9px 16px;font-family:${MONO};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${C.ink}">Not for everybody &nbsp;<span style="color:${C.blood}">&#9670;</span>&nbsp; JHB 011</td></tr></table>
+  <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:${C.ink}">
+    <tr><td class="pad" style="padding:28px 32px 18px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td align="left"><a href="${S}"><img src="${S}/assets/email/logo.png" width="72" alt="TSC" style="display:block;width:72px;height:auto;border:0"></a></td>
+      <td align="right">${mono('Sanctuary // <span style="color:' + C.blood + '">&#9679;</span> Live', C.ash, 10)}</td></tr></table></td></tr>
+    <tr><td style="height:2px;background:${C.blood};font-size:0;line-height:0">&nbsp;</td></tr>
+    <tr><td class="pad" style="padding:36px 32px 10px">${mono(esc(eyebrow), C.ash)}<div class="h1" style="font-family:${BLACK};font-size:66px;line-height:0.9;color:${C.bone};margin-top:14px">${title}</div></td></tr>
+    <tr><td class="pad" style="padding:8px 32px 28px;font-family:${SANS};font-size:16px;line-height:1.55;color:${C.bone2}">${body}</td></tr>
+    ${extra}
+    ${cta ? `<tr><td align="center" class="pad" style="padding:6px 32px 40px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="${C.bone}" style="background:${C.bone}"><a href="${ctaHref}" style="display:inline-block;padding:18px 36px;font-family:${MONO};font-size:12px;letter-spacing:3px;text-transform:uppercase;color:${C.ink};text-decoration:none;font-weight:bold">${cta} &nbsp;&rarr;</a></td></tr></table></td></tr>` : ''}
+    <tr><td class="pad" align="center" style="padding:10px 32px 40px;font-family:${MONO};font-size:9px;letter-spacing:1.5px;text-transform:uppercase;line-height:1.9;color:${C.ash}">&copy; 2026 The Saints Club &nbsp;//&nbsp; Midrand, Gauteng, ZA &nbsp;//&nbsp; JHB 011</td></tr>
+    <tr><td align="center" style="padding:0 0 30px"><div style="font-family:${BLACK};font-size:120px;line-height:0.8;color:${C.ink3}">TSC</div></td></tr>
+  </table></td></tr></table></body></html>`;
+}
+
+function quoteBlock({ topic, order, message }) {
+  return `<tr><td class="pad" style="padding:0 32px 30px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.ink2};border:1px solid ${C.ink4};border-left:3px solid ${C.rose}"><tr><td style="padding:20px 22px">
+    ${mono(esc(topic) + (order ? ' // Order ' + esc(order) : ''), C.rose, 10)}
+    <div style="font-family:${SANS};font-size:15px;line-height:1.6;color:${C.bone2};margin-top:10px;white-space:pre-wrap">${esc(message)}</div>
+  </td></tr></table></td></tr>`;
+}
+
+function contactReplyEmail(d) {
+  const first = esc(d.name.split(' ')[0]);
+  return shell({ pre: `We got your message, ${d.name}. Replies within a day.`, eyebrow: '00 / Received', title: `Got it,<br><span style="color:${C.rose}">${first}.</span>`,
+    body: `Your message is in the inbox and a real person in Johannesburg will answer within a day, usually faster after dark. Here is what you sent us, for your records.`,
+    extra: quoteBlock(d), cta: 'Back to the sanctuary', ctaHref: SITE() });
+}
+function contactReplyText(d) { return `THE SAINTS CLUB // JHB 011\n\nGot it, ${d.name}. We answer within a day.\n\nTopic: ${d.topic}${d.order ? ' // Order ' + d.order : ''}\n\n${d.message}\n\n${SITE()}`; }
+
+function contactOwnerEmail(d) {
+  const row = (k, v) => `<tr><td style="padding:10px 14px;border-bottom:1px solid ${C.ink4};font-family:${MONO};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${C.ash};width:120px">${k}</td><td style="padding:10px 14px;border-bottom:1px solid ${C.ink4};font-family:${SANS};font-size:14px;color:${C.bone}">${esc(v || '—')}</td></tr>`;
+  return `<!DOCTYPE html><html><body style="margin:0;background:${C.ink};padding:24px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:100%;background:${C.ink2};border:1px solid ${C.ink4}">
+    <tr><td style="padding:22px 14px 8px;font-family:${BLACK};font-size:34px;color:${C.bone}">New message.</td></tr>
+    <tr><td style="padding:0 14px 16px;font-family:${MONO};font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${C.rose}">${esc(d.topic)} // ${new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })} SAST // reply to this mail to answer</td></tr>
+    <tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${row('From', d.name)}${row('Email', d.email)}${row('Order', d.order)}${row('Topic', d.topic)}${row('IP', d.ip)}${row('Device', d.ua)}</table></td></tr>
+    <tr><td style="padding:18px 14px;font-family:${SANS};font-size:15px;line-height:1.6;color:${C.bone};white-space:pre-wrap;border-top:3px solid ${C.rose}">${esc(d.message)}</td></tr>
+    <tr><td style="padding:16px 14px;font-family:${MONO};font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${C.ash}">Sent by ${SITE().replace(/^https?:\/\//, '')}/contact</td></tr>
+  </table></body></html>`;
+}
+
+module.exports = { subscriberEmail, subscriberText, ownerEmail, copyFor, contactReplyEmail, contactReplyText, contactOwnerEmail };

@@ -32,6 +32,7 @@ Opening `site/index.html` straight from the file system also works, but the WebG
 | `site/product.html?h=<handle>` | Gallery, sizes, fit read, measurements, accordions, sticky add-to-bag on mobile, related pieces |
 | `site/lookbook.html` | Editorial grid with shoppable hotspots and torch-lit night shots |
 | `site/club.html` | Ranks, rank progress, drop calendar, house rules |
+| `site/contact.html` + `api/contact.js` | Contact form: message to the brand inbox (reply-to set to the sender) plus a branded receipt to the sender |
 | `site/js/data.js` | The catalogue, lookbook and drop calendar. Edit prices, sizes, copy and images here |
 | `site/js/core.js` | Shared engine: cursor, HUD, smooth scroll, reveals, marquees, menu, cart drawer, checkout |
 | `site/js/hero.js` | The hero shader (cursor flow distortion, chromatic split, scanline, grain) |
@@ -49,7 +50,7 @@ Each product in `data.js` has: handle, name, category, price, member price, badg
 
 ## Email (Nodemailer)
 
-Every form on the site (drop early access, newsletter, club waitlist, and the "Notify me on restock" buttons) posts to `site/api/subscribe.js`, a Vercel serverless function. It validates the address, drops honeypot hits, rate-limits per IP, and sends two mails through Nodemailer: a branded confirmation to the subscriber (`site/api/_mail/template.js`) and a plain notification to the brand.
+Every signup form on the site (drop early access, newsletter, club waitlist, and the "Notify me on restock" buttons) posts to `site/api/subscribe.js`; the contact page posts to `site/api/contact.js`, a Vercel serverless function. It validates the address, drops honeypot hits, rate-limits per IP, and sends two mails through Nodemailer: a branded confirmation to the subscriber (`site/api/_mail/template.js`) and a plain notification to the brand.
 
 Set these environment variables in the Vercel project (Settings → Environment Variables), then redeploy:
 
