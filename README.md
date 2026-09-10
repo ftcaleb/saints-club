@@ -4,7 +4,9 @@ Static, no-build front end for thesaintsclub.online. Everything lives in `site/`
 
 ## Live
 
-https://the-saints-club.vercel.app (Vercel project `the-saints-club`, scope `boikanyo-mokokas-projects`). Redeploy from `site/`:
+https://the-saints-club.vercel.app (Vercel project `the-saints-club`, scope `boikanyo-mokokas-projects`, root directory `site`).
+
+Source: https://github.com/ftcaleb/saints-club. The Vercel project is connected to this repo, so every push to `main` deploys to production automatically. Manual deploy from the repo root:
 
 ```
 vercel deploy --prod --yes --scope boikanyo-mokokas-projects
