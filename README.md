@@ -47,6 +47,27 @@ The bag lives in `localStorage`. Checkout builds a Shopify cart permalink from t
 
 Each product in `data.js` has: handle, name, category, price, member price, badges, sizes with availability and Shopify variant id, image keys, spec, fit meter position, model notes, copy, and flat measurements. Image keys map to files in `assets/img/` (`<key>-480.webp`, `<key>-960.webp`, native width).
 
+## Email (Nodemailer)
+
+Every form on the site (drop early access, newsletter, club waitlist, and the "Notify me on restock" buttons) posts to `site/api/subscribe.js`, a Vercel serverless function. It validates the address, drops honeypot hits, rate-limits per IP, and sends two mails through Nodemailer: a branded confirmation to the subscriber (`site/api/_mail/template.js`) and a plain notification to the brand.
+
+Set these environment variables in the Vercel project (Settings → Environment Variables), then redeploy:
+
+| Variable | Example | Notes |
+|---|---|---|
+| `SMTP_HOST` | `smtp.gmail.com` | Any SMTP provider: Gmail, Resend, Brevo, Mailgun, Postmark |
+| `SMTP_PORT` | `465` | 465 uses TLS, 587 uses STARTTLS |
+| `SMTP_USER` | `rkhama50@gmail.com` | Gmail needs an App Password, not the account password |
+| `SMTP_PASS` | `xxxx xxxx xxxx xxxx` | |
+| `MAIL_FROM` | `The Saints Club <rkhama50@gmail.com>` | Must be an address the provider lets you send as |
+| `MAIL_TO` | `rkhama50@gmail.com` | Where new-signup notifications go |
+| `MAIL_REPLY_TO` | `hello@thesaintsclub.online` | Optional |
+| `SITE_URL` | `https://the-saints-club.vercel.app` | Used for links and images inside the email |
+
+Until SMTP is configured the API still accepts signups, logs them in the Vercel function logs, and the site tells the visitor they are in. Product tiles in the email come from `site/api/_mail/catalogue.js`; keep it in sync with `js/data.js`. Email images are the JPGs in `site/assets/email/`.
+
+Local test without real credentials: `cd site && npm install`, then run the handler with Ethereal (see the Nodemailer docs) or open the rendered HTML from `template.js` in a browser.
+
 ## Motion rules
 
 Every section responds to scroll, cursor, hover or time. `prefers-reduced-motion` disables the preloader, smooth scroll, pinning and reveals while keeping the full layout. The custom cursor only appears on fine pointers.

@@ -334,11 +334,55 @@
       if (e.target.closest('[data-close-cart]')) cart.close();
       if (e.target.closest('[data-checkout]')) cart.checkout();
       const add = e.target.closest('[data-add]'); if (add) { const [h, s] = add.dataset.add.split('|'); cart.add(h, s); }
-      const n = e.target.closest('[data-notify]'); if (n) { toast(`You're on the list for ${TSC.byHandle(n.dataset.notify)?.short || 'this piece'}`); n.textContent = 'On the list ✓'; }
+      const n = e.target.closest('[data-notify]'); if (n) askEmail({ source: 'restock', product: n.dataset.notify, trigger: n });
+      if (e.target.closest('[data-close-modal]')) closeModal();
     });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') cart.close(); });
-    document.addEventListener('submit', e => { const f = e.target; if (f.matches('[data-fake]')) { e.preventDefault(); const em = $('input[type=email]', f); toast(em && em.value ? `Welcome to the club, ${em.value.split('@')[0]}.` : 'Enter your email first'); if (em) em.value = ''; } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { cart.close(); closeModal(); } });
+    document.addEventListener('submit', async e => {
+      const f = e.target; if (!f.matches('[data-fake]')) return;
+      e.preventDefault();
+      const em = $('input[type=email]', f), ph = $('input[type=tel]', f), btn = $('button[type=submit]', f);
+      if (!em || !em.value) { toast('Enter your email first'); return; }
+      const label = btn ? btn.innerHTML : ''; if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      const r = await subscribe({ email: em.value, phone: ph ? ph.value : '', source: f.dataset.source || 'newsletter', product: f.dataset.product || '' });
+      if (btn) { btn.disabled = false; btn.innerHTML = label; }
+      if (r.ok) { toast(r.delivered ? `Check your inbox, ${em.value.split('@')[0]}. You're in.` : `You're in, ${em.value.split('@')[0]}. Welcome mail follows.`); em.value = ''; if (ph) ph.value = ''; if (f.closest('.modal')) { const t = f.closest('.modal').__trigger; if (t) t.textContent = 'On the list ✓'; closeModal(); } }
+      else toast(r.error || 'Could not reach the list. DM @the.saintsclub');
+    });
   }
+
+  async function subscribe(data) {
+    try {
+      const res = await fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) return { ok: false, error: j.error };
+      return j;
+    } catch (e) { return { ok: false, error: location.protocol === 'file:' ? 'Forms work on the live site' : 'Network error. Try again.' }; }
+  }
+  TSC.subscribe = subscribe;
+
+  function askEmail({ source, product, trigger }) {
+    closeModal();
+    const p = TSC.byHandle(product);
+    const m = document.createElement('div'); m.className = 'modal'; m.__trigger = trigger;
+    m.innerHTML = `<div class="modal__backdrop" data-close-modal></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-label="Restock list">
+        <button class="modal__close" data-close-modal aria-label="Close">✕</button>
+        <span class="eyebrow">Restock list</span>
+        <h3 class="t-black modal__title">${p ? p.short : 'This piece'}<br><span class="t-rose">before everybody.</span></h3>
+        <p class="lead" style="font-size:14px">One email when it lands, 24 hours before the public link. No bots, one per Saint.</p>
+        <form class="drop__form" data-fake data-source="${source}" data-product="${product || ''}">
+          <input type="text" name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+          <input type="email" placeholder="YOUR EMAIL" required aria-label="Email" autofocus><button type="submit">Save my spot</button>
+        </form>
+      </div>`;
+    document.body.appendChild(m);
+    requestAnimationFrame(() => m.classList.add('is-open'));
+    setTimeout(() => $('input[type=email]', m)?.focus(), 350);
+    TSC.lenis && TSC.lenis.stop();
+  }
+  function closeModal() { const m = $('.modal'); if (!m) return; m.classList.remove('is-open'); TSC.lenis && TSC.lenis.start(); setTimeout(() => m.remove(), 450); }
+  TSC.askEmail = askEmail;
 
   /* ------------------------------------------------------------ product card */
   TSC.card = function (p, i) {

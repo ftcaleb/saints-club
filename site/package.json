@@ -1,0 +1,12 @@
+{
+  "name": "the-saints-club",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The Saints Club storefront and mail functions",
+  "dependencies": {
+    "nodemailer": "^10.0.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
