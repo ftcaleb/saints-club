@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop — The Saints Club</title>
+  <meta name="description" content="Shop The Saints Club: 500 GSM hoodies, camo tracksuits, piped track pants, waffle beanies. Johannesburg streetwear, ships nationwide.">
+  <meta name="theme-color" content="#0a0a0b">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Big+Shoulders+Display:wght@100..900&family=Inter+Tight:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-page="shop">
+  <section class="container page-head" data-section="01 / Shop">
+    <span class="eyebrow"><span data-scramble>The full uniform</span>&nbsp;// <span id="count">9</span> pieces</span>
+    <h1 class="t-black page-head__title" data-split="chars">Shop.</h1>
+    <div class="page-head__row">
+      <div class="filters" id="filters">
+        <button class="chip is-active" data-f="all">All</button>
+        <button class="chip" data-f="Hoodies">Hoodies</button>
+        <button class="chip" data-f="Outerwear">Outerwear</button>
+        <button class="chip" data-f="Bottoms">Bottoms</button>
+        <button class="chip" data-f="Tees">Tees</button>
+        <button class="chip" data-f="Sets">Sets</button>
+        <button class="chip" data-f="Headwear">Headwear</button>
+        <button class="chip" data-f="women">Women</button>
+        <button class="chip" data-f="instock">In stock</button>
+      </div>
+      <label class="sort">Sort <select id="sort"><option value="featured">Featured</option><option value="new">Newest</option><option value="low">Price low to high</option><option value="high">Price high to low</option></select></label>
+    </div>
+  </section>
+  <section class="container" data-section="01 / Shop">
+    <div class="grid" id="grid"></div>
+  </section>
+  <section class="marquee marquee--big" data-speed="70" data-velocity data-section="02 / Drops">
+    <div class="marquee__track"><div class="marquee__item">Members pay less <i></i> <span class="alt">Restock 02.10</span> <i></i> Free shipping over R1,500 <i></i> <span class="alt">Not for everybody</span> <i></i></div></div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core.js"></script>
+  <script>
+  (function () {
+    const $ = (s, c) => (c || document).querySelector(s), $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+    function init() {
+      const grid = $('#grid');
+      grid.innerHTML = TSC.PRODUCTS.map((p, i) => TSC.card(p, i)).join('');
+      const cards = $$('.card', grid);
+      let filter = new URLSearchParams(location.search).get('cat') || 'all';
+      function apply(animate) {
+        const state = animate && !TSC.reduced ? Flip.getState(cards) : null;
+        let vis = 0;
+        cards.forEach(c => {
+          const p = TSC.PRODUCTS[+c.dataset.i];
+          const ok = filter === 'all' || (filter === 'women' ? p.gender === 'women' : filter === 'instock' ? !p.soldOut : p.cat === filter);
+          c.style.display = ok ? '' : 'none'; if (ok) vis++;
+        });
+        $('#count').textContent = vis;
+        $$('.chip').forEach(ch => ch.classList.toggle('is-active', ch.dataset.f === filter));
+        if (state) Flip.from(state, { duration: 0.7, ease: 'power3.inOut', stagger: 0.02, absolute: true, onEnter: els => gsap.fromTo(els, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }), onLeave: els => gsap.to(els, { opacity: 0, scale: 0.9, duration: 0.4 }) });
+        ScrollTrigger.refresh();
+      }
+      $$('.chip').forEach(ch => ch.addEventListener('click', () => { filter = ch.dataset.f; history.replaceState(null, '', filter === 'all' ? 'shop.html' : `shop.html?cat=${filter}`); apply(true); }));
+      $('#sort').addEventListener('change', e => {
+        const v = e.target.value; const state = TSC.reduced ? null : Flip.getState(cards);
+        const sorted = [...cards].sort((a, b) => { const pa = TSC.PRODUCTS[+a.dataset.i], pb = TSC.PRODUCTS[+b.dataset.i]; if (v === 'low') return pa.price - pb.price; if (v === 'high') return pb.price - pa.price; if (v === 'new') return (pb.badges.includes('New') ? 1 : 0) - (pa.badges.includes('New') ? 1 : 0); return +a.dataset.i - +b.dataset.i; });
+        sorted.forEach(c => grid.appendChild(c));
+        if (state) Flip.from(state, { duration: 0.8, ease: 'power3.inOut', stagger: 0.02 });
+      });
+      apply(false);
+      if (!TSC.reduced) gsap.from(cards, { y: 60, opacity: 0, duration: 1, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: grid, start: 'top 85%', once: true } });
+    }
+    TSC.boot(init);
+  })();
+  </script>
+</body>
+</html>

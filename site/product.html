@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Saints Club — Product</title>
+  <meta name="theme-color" content="#0a0a0b">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Big+Shoulders+Display:wght@100..900&family=Inter+Tight:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-page="product">
+  <section class="container pdp" id="pdp" data-section="01 / Piece"></section>
+  <section class="section section--tight container" data-section="02 / Complete">
+    <div class="section__head"><div><span class="eyebrow" data-scramble>Complete the uniform</span><h2 class="t-black h-3" style="margin-top:12px">Goes with this.</h2></div><a class="link-line" href="shop.html">All pieces →</a></div>
+    <div class="grid grid--4" id="related"></div>
+  </section>
+  <div class="sticky-atb" id="stickyAtb"><div><div class="sticky-atb__name" id="stName"></div><div class="sticky-atb__price" id="stPrice"></div></div><button class="btn btn--solid" id="stBtn">Add to bag</button></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core.js"></script>
+  <script>
+  (function () {
+    const $ = (s, c) => (c || document).querySelector(s), $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+    function init() {
+      const h = new URLSearchParams(location.search).get('h');
+      const p = TSC.byHandle(h) || TSC.PRODUCTS[0];
+      document.title = `${p.name} — The Saints Club`;
+      const firstOk = p.sizes.find(s => s.ok);
+      let size = firstOk ? firstOk.s : null;
+      const measHead = p.cat === 'Bottoms' ? ['Size', 'Length', 'Waist', 'Leg opening'] : p.cat === 'Tees' ? ['Size', 'Length', 'Chest', 'Sleeve'] : ['Size', 'Length', 'Chest', 'Sleeve'];
+      const meas = p.measurements ? `<table><tr>${measHead.map(x => `<th>${x}</th>`).join('')}</tr>${Object.entries(p.measurements).map(([k, v]) => `<tr><td>${k}</td>${v.map(n => `<td>${n} cm</td>`).join('')}</tr>`).join('')}</table><p style="margin-top:12px" class="t-mono t-ash">Flat measurements in cm. ${p.spec.fit}.</p>` : `<p>${p.spec.fit}. ${p.models.join('. ')}.</p>`;
+      $('#pdp').innerHTML = `
+        <div class="pdp__gallery">${p.images.map((im, i) => `<figure class="pdp__shot">${TSC.imgTag(im, '', '(max-width:900px) 100vw, 55vw', p.name, i === 0)}<span>${String(i + 1).padStart(2, '0')} / ${String(p.images.length).padStart(2, '0')}</span></figure>`).join('')}</div>
+        <div class="pdp__info">
+          <div><span class="eyebrow" data-scramble>${p.cat} // ${p.badges.join(' // ')}</span><h1 class="t-black pdp__title" data-split="lines" style="margin-top:14px">${p.name.replace(' — ', '<br>')}</h1></div>
+          <div class="pdp__price">${TSC.money(p.price)}${p.compare ? `<s class="t-ash" style="font-size:0.6em">${TSC.money(p.compare)}</s>` : ''}<small>Members ${TSC.money(p.member)}</small></div>
+          <div class="pdp__bnpl">Or 4 × <b>${TSC.money(p.price / 4)}</b> interest-free with Payflex // PayJustNow</div>
+          <div class="sizes">
+            <div class="sizes__head"><span>Size ${size ? '// ' + size : '// Select'}</span><button type="button" data-acc="fit">Size guide</button></div>
+            <div class="sizes__grid" id="sizes">${p.sizes.map(s => `<button class="size ${s.s === size ? 'is-active' : ''}" data-s="${s.s}" ${s.ok ? '' : 'disabled'}>${s.s}</button>`).join('')}</div>
+          </div>
+          <div class="pdp__actions">
+            ${p.soldOut ? `<button class="btn btn--solid btn--wide" data-notify="${p.handle}" data-magnetic>Notify me on restock</button><a class="btn btn--ghost btn--wide" href="club.html#tiers">Members get restocks first</a>`
+              : `<button class="btn btn--solid btn--wide" id="atb" data-magnetic>${p.preorder ? 'Pre-order // ships 02.10' : 'Add to bag'} <span class="btn__arrow">→</span></button><button class="btn btn--ghost btn--wide" data-open-cart>View bag</button>`}
+          </div>
+          <div class="fit" id="fit">
+            <div class="fit__head"><span>Fit read</span><span>${p.spec.fit}</span></div>
+            <div class="fit__meter"><span style="left:${p.fitMeter * 100}%"></span></div>
+            <div class="fit__scale"><span>Runs small</span><span>True to size</span><span>Runs big</span></div>
+            <div class="fit__models">${p.models.map(m => `<span>${m}</span>`).join('')}<b>${p.spec.fabric} // ${p.spec.weight}</b></div>
+          </div>
+          <p class="lead" style="font-size:15px">${p.copy}</p>
+          <div class="acc">
+            <div class="acc__item" data-acc-item="fit"><button class="acc__btn">Measurements <i>+</i></button><div class="acc__panel"><div>${meas}</div></div></div>
+            <div class="acc__item"><button class="acc__btn">Shipping // 3 to 5 working days <i>+</i></button><div class="acc__panel"><div>Ships from Midrand, Gauteng. 3 to 5 working days nationwide. Free over R1,500. Tax included, shipping calculated at checkout.</div></div></div>
+            <div class="acc__item"><button class="acc__btn">Exchanges <i>+</i></button><div class="acc__panel"><div>Wrong size? Exchange within 7 days, unworn, tags on. Damaged on arrival: we replace it, no questions. Sale and drop pieces are final.</div></div></div>
+            <div class="acc__item"><button class="acc__btn">Care <i>+</i></button><div class="acc__panel"><div>Cold wash inside out. Hang dry. Do not tumble. The fade is meant to keep going; the print may crack over time. That is the point.</div></div></div>
+          </div>
+          <div class="pdp__meta"><span>Style // ${p.handle.toUpperCase().slice(0, 12)}</span><span>Made in JHB 011</span><span>©TSC 2026</span></div>
+        </div>`;
+
+      /* sizes */
+      $$('#sizes .size').forEach(b => b.addEventListener('click', () => { size = b.dataset.s; $$('.size').forEach(x => x.classList.toggle('is-active', x === b)); $('.sizes__head span').textContent = 'Size // ' + size; if (!TSC.reduced) gsap.fromTo(b, { scale: 0.9 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' }); }));
+      const add = () => { if (!size) { TSC.toast('Pick a size first'); $('#sizes').animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 300 }); return; } TSC.cart.add(p.handle, size); };
+      const atb = $('#atb'); if (atb) atb.addEventListener('click', add);
+      $('#stBtn').addEventListener('click', () => p.soldOut ? TSC.toast('Sold out. Join the restock list on this page.') : add());
+      $('#stName').textContent = p.short; $('#stPrice').textContent = TSC.money(p.price);
+      ScrollTrigger.create({ trigger: '.pdp__actions', start: 'bottom top', onEnter: () => $('#stickyAtb').classList.add('is-on'), onLeaveBack: () => $('#stickyAtb').classList.remove('is-on') });
+
+      /* accordions */
+      $$('.acc__item').forEach(it => { const btn = $('.acc__btn', it), panel = $('.acc__panel', it); btn.addEventListener('click', () => { const open = it.classList.toggle('is-open'); panel.style.maxHeight = open ? panel.scrollHeight + 'px' : 0; }); });
+      $('[data-acc=fit]').addEventListener('click', () => { const it = $('[data-acc-item=fit]'); if (!it.classList.contains('is-open')) $('.acc__btn', it).click(); (TSC.lenis ? TSC.lenis.scrollTo(it, { offset: -120 }) : it.scrollIntoView()); });
+
+      /* gallery parallax */
+      if (!TSC.reduced) $$('.pdp__shot img').forEach(im => gsap.fromTo(im, { yPercent: -8 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: im.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+      if (!TSC.reduced) gsap.from('.pdp__info > *', { y: 30, opacity: 0, stagger: 0.07, duration: 1, delay: 0.2 });
+
+      /* related */
+      const rel = TSC.PRODUCTS.filter(x => x.handle !== p.handle).sort((a, b) => (a.cat === p.cat ? 1 : 0) - (b.cat === p.cat ? 1 : 0)).slice(0, 4);
+      $('#related').innerHTML = rel.map(x => TSC.card(x, TSC.PRODUCTS.indexOf(x))).join('');
+    }
+    TSC.boot(init);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lookbook — The Saints Club</title>
+  <meta name="description" content="The Saints Club lookbook. Studio to street, Johannesburg. Shoppable.">
+  <meta name="theme-color" content="#0a0a0b">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Big+Shoulders+Display:wght@100..900&family=Inter+Tight:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-page="lookbook">
+  <section class="container page-head" data-section="02 / Lookbook">
+    <span class="eyebrow" data-scramble>Sanctuary // Vol. 1 // Shot in JHB</span>
+    <h1 class="t-black page-head__title" data-split="chars">Lookbook.</h1>
+    <p class="lead" data-reveal>Hover the night shots to light them. Tap the markers to shop the piece. Studio to street, nothing staged that wasn't already happening.</p>
+  </section>
+  <section class="container" data-section="02 / Lookbook"><div class="lb" id="lb"></div></section>
+  <section class="section container t-center" data-section="03 / Enter">
+    <span class="eyebrow" style="justify-content:center" data-scramble>End of roll</span>
+    <h2 class="t-black h-1" data-split="lines" style="margin-top:16px">Now wear it.</h2>
+    <a class="btn btn--solid" href="shop.html" style="margin-top:32px" data-magnetic data-reveal>Shop the uniform <span class="btn__arrow">→</span></a>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core.js"></script>
+  <script>
+  (function () {
+    const $ = (s, c) => (c || document).querySelector(s), $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+    function init() {
+      const L = TSC.LOOKBOOK;
+      const shot = (l, cls) => `<figure class="lb__shot ${cls || ''} ${l.night ? 'lb__shot--night' : ''}" data-spot>
+          ${TSC.imgTag(l.img, '', '(max-width:760px) 100vw, 60vw', l.cap[0])}
+          ${l.hotspots.map(h => { const p = TSC.byHandle(h.p); return `<a class="hotspot ${h.x > 60 ? 'hotspot--flip' : ''}" href="product.html?h=${p.handle}" style="left:${h.x}%;top:${h.y}%" data-cursor="Shop"><span class="hotspot__card"><b>${p.short}</b><span>${TSC.money(p.price)} // ${p.soldOut ? 'Sold out' : 'In stock'}</span></span></a>`; }).join('')}
+          <figcaption class="lb__cap"><span>${l.cap[0]}</span><span>${l.cap[1]}</span></figcaption></figure>`;
+      const rows = [
+        `<div class="lb__row">${shot(L[0], 'lb__shot--4')}${shot(L[1], 'lb__shot--8')}</div>`,
+        `<div class="lb__row">${shot(L[2])}<div class="lb__quote"><span class="eyebrow">Night // Cobalt</span><p class="t-black" style="margin-top:16px">The bars are blue,<br>the hoodie is faded,<br>the flash is honest.</p></div></div>`,
+        `<div class="lb__row">${shot(L[3], 'lb__shot--4')}${shot(L[4], 'lb__shot--4')}${shot(L[5], 'lb__shot--4')}</div>`,
+        `<div class="lb__row">${shot(L[8], 'lb__shot--12')}</div>`,
+        `<div class="lb__row"><div class="lb__quote"><span class="eyebrow">Studio // Pink cast</span><p class="t-black" style="margin-top:16px">Grills out,<br>cap low,<br>JHB 011.</p></div>${shot(L[6])}</div>`,
+        `<div class="lb__row">${shot(L[7], 'lb__shot--4')}${shot(L[9], 'lb__shot--4')}${shot(L[10], 'lb__shot--4')}</div>`,
+        `<div class="lb__row">${shot(L[11], 'lb__shot--8')}<div class="lb__quote lb__shot--4" style="aspect-ratio:auto"><span class="eyebrow">Asphalt</span><p class="t-black" style="margin-top:16px">Two beanies,<br>one stud each,<br>gone in an hour.</p></div></div>`
+      ];
+      $('#lb').innerHTML = rows.join('');
+      if (!TSC.reduced) {
+        $$('.lb__shot').forEach((s, i) => {
+          gsap.fromTo(s, { clipPath: 'inset(12% 6% 12% 6%)', opacity: 0.4 }, { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, duration: 1.3, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 88%', once: true } });
+          gsap.fromTo($('img', s), { yPercent: -8 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } });
+        });
+        $$('.lb__quote').forEach(q => gsap.from(q.children, { y: 30, opacity: 0, stagger: 0.1, duration: 1, scrollTrigger: { trigger: q, start: 'top 85%', once: true } }));
+      }
+    }
+    TSC.boot(init);
+  })();
+  </script>
+</body>
+</html>
